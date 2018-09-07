@@ -1,0 +1,134 @@
+<div class="<?= $this->class  ?> block"<?= $this->cssID  ?><?php if ($this->style): ?> style="<?= $this->style  ?>"<?php endif; ?>>
+<?php if ($this->headline): ?> 
+
+<<?= $this->hl  ?>><?= $this->headline  ?></<?= $this->hl  ?>>
+<?php endif; ?> 
+	
+<?php if(FE_USER_LOGGED_IN) : ?>
+
+<script>
+				
+	//sticky (div which sticks at the top of the screen) for general info
+	$(window).scroll(sticky_relocate);
+	$(function() {
+		sticky_relocate();
+	});
+
+function sticky_relocate() {
+	var window_top = $(window).scrollTop();
+	var anchor = $('.info-anchor').offset().top;
+		if (window_top > anchor) {
+			$('.sticky').find('.info').addClass('stick');
+		} else {
+			$('.sticky').find('.info').removeClass('stick');
+		}
+}
+			
+</script>
+
+<?php if(count($this->arrLectures) > 0) : ?>
+	
+	<form class="mod-tdw-choice-form" action="<?php ?>" method="POST">
+	
+	<div class="sticky">
+		<div class="info-anchor"></div>
+		<div class="info">
+
+			<span class="mod-tdw-choice-wish-info">
+				<?= $GLOBALS['TL_LANG']['MSC']['done_choices']  ?>: 
+				<span id="free-wishes"></span> / <span id="max-wishes"><?= $this->userMaxChoiceAmount  ?></span>
+			</span> 
+	
+			<input type="submit" value="Auswahl speichern" name="choice-submit" />
+			<span class="tdw-choice-error"><?php if($this->error) : ?><?= $this->error  ?><?php endif; ?></span>
+			<?php if($this->message) : ?><span class="tdw-choice-success"><?= $this->message  ?></span><?php endif; ?>
+		</div>
+	</div><br />
+
+
+	<input type="hidden" name="FORM_SUBMIT" value="tdw-choice">
+	<input type="hidden" name="REQUEST_TOKEN" value="{{request_token}}">
+		
+<?php $i = 0; ?>
+<?php foreach($this->arrLectures as $lecture) : ?>
+	
+	<div class="mod-tdw-lecture-container<?php if(in_array($lecture['id'],$this->arrChoices)) : ?> chosen<?php endif; ?><?php if($lecture['visitedLastYear']) : ?> not-electable<?php endif; ?>">
+		<div class="mod-tdw-lecture-headline">
+			<div class="mod-tdw-lecture-title">
+				<?php if($lecture['speaker']) : ?><?= $lecture['speaker'] ?>: <?php endif; ?><?= $lecture['title'] ?>
+				<?php if($lecture['visitedLastYear']) : ?><span style="color:#d84c4c;"> - Nicht wählbar, da bereits im letzten Schuljahr besucht</span><?php endif; ?>
+			</div>
+			<div class="mod-tdw-lecture-choice">
+				<input class="mod-tdw-lecture-choice-checkbox" 
+				   type="checkbox" 
+				   <?php if(in_array($lecture['id'],$this->arrChoices)) : ?>checked="checked"<?php endif; ?>
+				   name="lecture-<?= $lecture['id'] ?>" 
+				   value="<?= $lecture['id'] ?>" 
+				/>
+			</div>
+		</div>
+		<?php if($lecture['hasDescription']) : ?>
+		<div class="mod-tdw-lecture-body">
+			<div class="mod-tdw-lecture-description">
+				<?= $lecture['description']  ?>
+			</div>
+		</div>
+		<?php endif; ?>
+	</div>
+	<?php $i++; ?>
+	
+<?php endforeach; ?>
+	
+
+</form>	
+
+	
+<script type="text/javascript">
+	
+	(function($) {
+	
+		$("#free-wishes").text(<?= count($this->arrChoices) ?>);
+		var maxAmount = <?= $this->userMaxChoiceAmount  ?>;
+		
+		$(".mod-tdw-lecture-choice-checkbox").click(function() {
+			e = $("#free-wishes");
+			
+			if($(this).is(":checked")) {
+				if(parseInt(e.text()) < maxAmount && !$(this).parent().parent().parent().hasClass("not-electable")) {
+					e.text(parseInt(e.text()) + 1);
+					$(this).parent().parent().parent().addClass('chosen');
+					$('.tdw-choice-success').remove();
+					$('.tdw-choice-error').text('Nicht gespeicherte Änderungen vorhanden');
+				}
+				else {
+					$(this).prop("checked",false);
+					$(this).attr("checked",false);
+					$(this).removeAttr("checked");
+				}
+			}
+			else {
+					e.text(parseInt(e.text()) - 1);
+					$(this).parent().parent().parent().removeClass('chosen');
+					$('.tdw-choice-success').remove();
+					$('.tdw-choice-error').text('Nicht gespeicherte Änderungen vorhanden');
+			}
+		});
+		
+	})(jQuery);  
+	
+</script>
+
+	
+<?php else : ?>
+	
+	<span class="tdw-choice-error"><?= $GLOBALS['TL_LANG']['MSC']['lecture_amount_error'] ?></span>
+	
+<?php endif; ?>
+<?php else : ?>
+	
+	<span class="tdw-choice-error show-login" style="cursor:pointer"><?= $GLOBALS['TL_LANG']['MSC']['login_error'] ?></span>
+	
+	
+<?php endif; ?>
+
+</div>

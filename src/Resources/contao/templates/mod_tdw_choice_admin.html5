@@ -1,0 +1,59 @@
+<?php if($this->message) : ?>
+<br />
+<div class="tl_formbody_edit">
+	<h2><?= $this->message ?></h2>
+</div>
+<?php endif; ?>
+
+<h2 class="sub_headline">Statistiken</h2>
+<div class="tl_tbox widget">
+	<h3>Vorträge: <?= $this->lectureCount ?></h3>
+	<p class="tl_help tl_tip">Gesamtanzahl an verschiedenen Angeboten</p>
+	
+	<h3>Schüler: <?= $this->studentsHaveToChoose ?></h3>
+	<p class="tl_help tl_tip">Anzahl der Schüler, die nach Herr Bichers Liste wählen müssten</p>
+	
+	<h3>Schüler mit Wünschen: <?= $this->studentsHaveChosen ?></h3>
+	<p class="tl_help tl_tip">Anzahl der Schüler, die bereits Wünsche abgegeben haben</p>
+</div>
+
+<form action="<?= $this->route('contao_backend') ?>?do=tdwChoiceAdmin" class="tl_form maintenance_inactive" method="post">
+	<h2 class="sub_headline">Aktionen</h2>
+	<input type="hidden" name="FORM_SUBMIT" value="mod_tdw_choice_admin">
+	<input type="hidden" name="REQUEST_TOKEN" value="<?php echo REQUEST_TOKEN; ?>">
+	<br />
+	<div class="tl_submit_container">
+		<input type="submit" value="Vorträge neu aus CSV einlesen" name="importLecturesFromCsv" class="tl_submit" />
+	</div>
+	
+	<div class="tl_submit_container">
+		<input type="submit" value="Wünsche in CSV speichern" name="storeChoicesInCsvFile" class="tl_submit" />
+	</div>
+</form>
+
+<form action="<?= $this->route('contao_backend') ?>?do=tdwChoiceAdmin" class="tl_form maintenance_inactive" method="post">
+    <h2 class="sub_headline">Vorträge in Artikel kopieren</h2>
+
+	<input type="hidden" name="FORM_SUBMIT" value="mod_tdw_choice_admin">
+    <input type="hidden" name="REQUEST_TOKEN" value="<?php echo REQUEST_TOKEN; ?>">
+    <div class="tl_formbody_edit">
+		<div class="tl_tbox nolegend">
+			<h2>Artikel auswählen</h2>
+			<select name="copyArticle" id="ctrl_type" class="tl_select tl_box tl_chosen" onfocus="Backend.getScrollOffset()" style="display: none;">
+			<?php foreach ($this->pages as $title => $page) : ?>
+				<optgroup label="<?= $title ?>">>
+					<?php foreach ($page as $article) : ?>
+					<option value=<?= $article['id'] ?>"><?= $article['title'] ?></option>
+					<?php endforeach; ?>
+				</optgroup>
+			<?php endforeach; ?>
+			</select>
+		</div>
+	</div>
+	<div class="tl_submit_container">
+		<input type="submit" value="Kopieren" name="copyLecturesToArticle" class="tl_submit" />
+	</div>
+	
+</form>
+</div>
+
