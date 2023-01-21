@@ -75,7 +75,7 @@ class ModuleTdwChoiceAdmin extends \BackendModule
 			$handle = fopen($strCsvFile, 'r');
 			$count = 0;
 			$row = 1;
-			while (($data = fgetcsv($handle, 1000, $this->csvSeperator)) !== false) {
+			while (($data = fgetcsv($handle, null, $this->csvSeperator)) !== false) {
 				if ($row > 1) {
 					$count++;
 				}
@@ -98,7 +98,7 @@ class ModuleTdwChoiceAdmin extends \BackendModule
 				$handle = fopen($strCsvFile, 'r');
 				$row = 1;
 
-				while (($data = fgetcsv($handle, 1000, $this->csvSeperator)) !== false) {
+				while (($data = fgetcsv($handle, null, $this->csvSeperator)) !== false) {
 					if (
 						$row > 1 &&
 						$data[1] == $student['lastname'] &&
@@ -181,7 +181,7 @@ class ModuleTdwChoiceAdmin extends \BackendModule
 
 		$handle = fopen($strCsvFile, 'r');
 
-		while (($data = fgetcsv($handle, 1000, $this->csvSeperator)) !== false) {
+		while (($data = fgetcsv($handle, null, $this->csvSeperator)) !== false) {
 
 			$num = count($data);
 
