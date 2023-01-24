@@ -35,7 +35,7 @@ class ModuleTdwChoice extends \Module
 	protected $arrChoicesAmount = array
 	(
 		'5' => 5,
-		'6' => 5,
+		'6' => 4,
 		'7' => 6,
 		'8' => 6,
 		'9' => 7,
